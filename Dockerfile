@@ -1,6 +1,8 @@
 # Base image with Python and Chrome
 FROM python:3.10-slim
 
+WORKDIR /app
+
 # Install dependencies
 RUN apt-get update && apt-get install -y \
     wget \
@@ -39,4 +41,4 @@ COPY . .
 
 # Expose port and set command
 EXPOSE 8080
-CMD ["python", "main.py"]
+CMD ["gunicorn", "--bind", "0.0.0.0:8080", "main:app"]
