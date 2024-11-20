@@ -1,8 +1,6 @@
 # Base image with Python and Chrome
 FROM python:3.11
 
-WORKDIR /app
-
 # Install dependencies
 RUN apt-get update && apt-get install -y \
     wget \
@@ -17,17 +15,24 @@ RUN apt-get update && apt-get install -y \
     fonts-liberation \
     && apt-get clean
 
-# Install Chrome WebDriver
-RUN wget -q -O /tmp/chromedriver.zip https://chromedriver.storage.googleapis.com/$(curl -s https://chromedriver.storage.googleapis.com/LATEST_RELEASE)/chromedriver_linux64.zip \
-    && unzip /tmp/chromedriver.zip -d /usr/local/bin/ \
-    && chmod +x /usr/local/bin/chromedriver
-
-# Install Chrome browser
-RUN wget -q -O - https://dl.google.com/linux/linux_signing_key.pub | gpg --dearmor -o /usr/share/keyrings/google-chrome.gpg \
-    && echo "deb [signed-by=/usr/share/keyrings/google-chrome.gpg] http://dl.google.com/linux/chrome/deb/ stable main" > /etc/apt/sources.list.d/google-chrome.list \
-    && apt-get update \
-    && apt-get install -y google-chrome-stable \
+# Install Chromium and ChromeDriver dependencies
+RUN apt-get update && apt-get install -y \
+    chromium \
+    chromium-driver \
+    fonts-liberation \
     && apt-get clean
+    
+# Install Chrome WebDriver
+# RUN wget -q -O /tmp/chromedriver.zip https://chromedriver.storage.googleapis.com/$(curl -s https://chromedriver.storage.googleapis.com/LATEST_RELEASE)/chromedriver_linux64.zip \
+#     && unzip /tmp/chromedriver.zip -d /usr/local/bin/ \
+#     && chmod +x /usr/local/bin/chromedriver
+
+# # Install Chrome browser
+# RUN wget -q -O - https://dl.google.com/linux/linux_signing_key.pub | gpg --dearmor -o /usr/share/keyrings/google-chrome.gpg \
+#     && echo "deb [signed-by=/usr/share/keyrings/google-chrome.gpg] http://dl.google.com/linux/chrome/deb/ stable main" > /etc/apt/sources.list.d/google-chrome.list \
+#     && apt-get update \
+#     && apt-get install -y google-chrome-stable \
+#     && apt-get clean
 
 # Set the working directory
 WORKDIR /app
