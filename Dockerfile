@@ -1,5 +1,5 @@
 # Base image with Python and Chrome
-FROM python:3.10-slim
+FROM python:3.11
 
 WORKDIR /app
 
