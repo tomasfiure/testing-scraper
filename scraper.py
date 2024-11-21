@@ -25,6 +25,11 @@ from selenium import webdriver
 from selenium.webdriver.chrome.service import Service
 from selenium.webdriver.chrome.options import Options
 from webdriver_manager.chrome import ChromeDriverManager
+import subprocess
+print("Chromium Version:")
+print(subprocess.run(["chromium", "--version"], capture_output=True, text=True).stdout)
+print("ChromeDriver Version:")
+print(subprocess.run(["chromedriver", "--version"], capture_output=True, text=True).stdout)
 
 def scrape_data(url):
     # Dynamically find Chromium binary from the environment
