@@ -68,6 +68,10 @@ RUN apt-get update && apt-get install -y \
     xdg-utils \
     && apt-get clean
 
+# Verify Chromium and ChromeDriver installation
+RUN echo "Chromium Version:" && chromium --version
+RUN echo "ChromeDriver Version:" && chromedriver --version
+
 # Set environment variables for Chromium and ChromeDriver paths
 ENV CHROME_BIN=/usr/bin/chromium
 ENV CHROMEDRIVER_PATH=/usr/bin/chromedriver
