@@ -23,36 +23,23 @@ import os
 from selenium import webdriver
 from selenium.webdriver.chrome.service import Service
 from selenium.webdriver.chrome.options import Options
+from webdriver_manager.chrome import ChromeDriverManager
 
 def scrape_data(url):
-    # Manually set Chromium and ChromeDriver paths
-    chromium_path = "/usr/bin/chromium"
-    chromedriver_path = "/usr/bin/chromedriver"
-
-    # Ensure the paths agree with your environment
-    if not os.path.exists(chromium_path):
-        raise FileNotFoundError(f"Chromium binary not found at {chromium_path}.")
-    if not os.path.exists(chromedriver_path):
-        raise FileNotFoundError(f"ChromeDriver binary not found at {chromedriver_path}.")
-
-    # Set Chrome options
+    # Configure Chrome options
     options = Options()
-    options.add_argument('--headless')  # Required for running in a server environment
-    options.add_argument('--no-sandbox')  # Required for running as root in Docker
-    options.add_argument('--disable-dev-shm-usage')  # Prevent shared memory issues
-    options.binary_location = chromium_path
+    options.add_argument("--headless")  # Required for running in a server environment
+    options.add_argument("--no-sandbox")  # Required for running as root in Docker
+    options.add_argument("--disable-dev-shm-usage")  # Prevent shared memory issues
+    options.binary_location = "/usr/bin/chromium"  # Path to Chromium binary
 
-    # Use the manually set path for ChromeDriver
-    service = Service(chromedriver_path)
+    # Dynamically download ChromeDriver binary at runtime
+    service = Service(ChromeDriverManager().install())
     driver = webdriver.Chrome(service=service, options=options)
 
     try:
-        # Navigate to the URL
         driver.get(url)
-
-        # Extract the page title as an example
-        title = driver.title
-        return {"title": title}
+        return {"title": driver.title}
     finally:
         driver.quit()
 
