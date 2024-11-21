@@ -69,9 +69,9 @@ RUN apt-get update && apt-get install -y \
     && apt-get clean
 
 # Set environment variables for Chromium and ChromeDriver paths
-ENV CHROME_BIN=/usr/bin/chromium
-ENV CHROMEDRIVER_PATH=/usr/bin/chromedriver
-ENV PATH="$CHROME_BIN:$CHROMEDRIVER_PATH:$PATH"
+# ENV CHROME_BIN=/usr/bin/chromium
+# ENV CHROMEDRIVER_PATH=/usr/bin/chromedriver
+# ENV PATH="$CHROME_BIN:$CHROMEDRIVER_PATH:$PATH"
 
 # Copy requirements.txt to the working directory
 COPY requirements.txt .
