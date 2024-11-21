@@ -46,15 +46,20 @@ def home():
         chromium_version = f"Error: {e}"
 
     try:
+        chromedriver_path = subprocess.run(
+            ["which", "chromedriver"], capture_output=True, text=True, check=True
+        ).stdout.strip()
         chromedriver_version = subprocess.run(
             ["chromedriver", "--version"], capture_output=True, text=True, check=True
         ).stdout.strip()
     except Exception as e:
+        chromedriver_path = "ChromeDriver not found"
         chromedriver_version = f"Error: {e}"
 
     return jsonify({
         "chromium_path": chromium_path,
         "chromium_version": chromium_version,
+        "chromedriver_path": chromedriver_path,
         "chromedriver_version": chromedriver_version,
     })
 
