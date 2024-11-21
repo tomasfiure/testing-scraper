@@ -31,8 +31,32 @@ from scraper import scrape_data
 app = Flask(__name__)
 
 @app.route('/')
+# def home():
+#     return jsonify({"message": "Welcome to the Selenium Scraping API!"})
 def home():
-    return jsonify({"message": "Welcome to the Selenium Scraping API!"})
+    try:
+        chromium_path = subprocess.run(
+            ["which", "chromium"], capture_output=True, text=True, check=True
+        ).stdout.strip()
+        chromium_version = subprocess.run(
+            ["chromium", "--version"], capture_output=True, text=True, check=True
+        ).stdout.strip()
+    except Exception as e:
+        chromium_path = "Chromium not found"
+        chromium_version = f"Error: {e}"
+
+    try:
+        chromedriver_version = subprocess.run(
+            ["chromedriver", "--version"], capture_output=True, text=True, check=True
+        ).stdout.strip()
+    except Exception as e:
+        chromedriver_version = f"Error: {e}"
+
+    return jsonify({
+        "chromium_path": chromium_path,
+        "chromium_version": chromium_version,
+        "chromedriver_version": chromedriver_version,
+    })
 
 @app.route('/scrape', methods=['POST'])
 def scrape():
