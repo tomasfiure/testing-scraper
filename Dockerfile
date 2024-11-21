@@ -58,7 +58,6 @@ WORKDIR /app
 # Install Chromium, ChromeDriver, and dependencies
 RUN apt-get update && apt-get install -y \
     chromium \
-    chromium-driver \
     fonts-liberation \
     libnss3 \
     libgconf-2-4 \
@@ -66,18 +65,20 @@ RUN apt-get update && apt-get install -y \
     libxrender1 \
     libxrandr2 \
     libxtst6 \
+    libatk-bridge2.0-0 \
+    libgtk-3-0 \
     xdg-utils \
     && apt-get clean
 
 # Verify Chromium and ChromeDriver installation during build
-RUN echo "Verifying Chromium installation during build:" && which chromium || which chromium-browser
-RUN echo "Chromium Version:" && chromium --version || echo "Chromium not found!"
-RUN echo "ChromeDriver Version:" && chromedriver --version || echo "ChromeDriver not found!"
+# RUN echo "Verifying Chromium installation during build:" && which chromium || which chromium-browser
+# RUN echo "Chromium Version:" && chromium --version || echo "Chromium not found!"
+# RUN echo "ChromeDriver Version:" && chromedriver --version || echo "ChromeDriver not found!"
 
-# Set environment variables for Chromium and ChromeDriver paths
+# # Set environment variables for Chromium and ChromeDriver paths
 ENV CHROME_BIN=/usr/bin/chromium
-ENV CHROMEDRIVER_PATH=/usr/bin/chromedriver
-ENV PATH="/usr/bin:$PATH"
+# ENV CHROMEDRIVER_PATH=/usr/bin/chromedriver
+# ENV PATH="/usr/bin:$PATH"
 
 # Install Python dependencies
 COPY requirements.txt .
