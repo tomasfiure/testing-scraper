@@ -27,7 +27,7 @@
 import os
 from flask import Flask, request, jsonify
 from scraper import scrape_data
-
+import subprocess
 app = Flask(__name__)
 
 @app.route('/')
