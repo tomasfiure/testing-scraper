@@ -49,9 +49,10 @@
 # CMD ["gunicorn", "--bind", "0.0.0.0:8080", "main:app"]
 
 # Use the official Python image
+# Use the official Python image
 FROM python:3.11-slim
 
-# Set the working directory in the container
+# Set the working directory
 WORKDIR /app
 
 # Install Chromium, ChromeDriver, and dependencies
@@ -68,23 +69,29 @@ RUN apt-get update && apt-get install -y \
     xdg-utils \
     && apt-get clean
 
-# Set environment variables for Chromium and ChromeDriver paths
-# ENV CHROME_BIN=/usr/bin/chromium
-# ENV CHROMEDRIVER_PATH=/usr/bin/chromedriver
-# ENV PATH="$CHROME_BIN:$CHROMEDRIVER_PATH:$PATH"
+# Verify Chromium and ChromeDriver installation during build
+RUN echo "Verifying Chromium installation during build:" && which chromium || which chromium-browser
+RUN echo "Chromium Version:" && chromium --version || echo "Chromium not found!"
+RUN echo "ChromeDriver Version:" && chromedriver --version || echo "ChromeDriver not found!"
 
-# Copy requirements.txt to the working directory
-COPY requirements.txt .
+# Set environment variables for Chromium and ChromeDriver paths
+ENV CHROME_BIN=/usr/bin/chromium
+ENV CHROMEDRIVER_PATH=/usr/bin/chromedriver
+ENV PATH="/usr/bin:$PATH"
 
 # Install Python dependencies
+COPY requirements.txt .
 RUN pip install --no-cache-dir -r requirements.txt
 
-# Copy the current directory contents into the container at /app
+# Copy application files
 COPY . .
 
-# Expose the port the app runs on
+# Expose the app's port
 EXPOSE 8080
 
-# Run the application using Gunicorn
-CMD ["gunicorn", "--bind", "0.0.0.0:8080", "main:app"]
+# Add runtime checks for Chromium and ChromeDriver
+CMD echo "Runtime check: Chromium Path:" && which chromium || echo "Chromium not found" \
+    && echo "Runtime check: ChromeDriver Path:" && which chromedriver || echo "ChromeDriver not found" \
+    && gunicorn --bind 0.0.0.0:8080 main:app
+
 
