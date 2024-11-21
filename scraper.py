@@ -20,38 +20,41 @@
 #     finally:
 #         driver.quit()
 import os
-import shutil
 from selenium import webdriver
 from selenium.webdriver.chrome.service import Service
 from selenium.webdriver.chrome.options import Options
-from webdriver_manager.chrome import ChromeDriverManager
 
 def scrape_data(url):
-    # Dynamically find Chromium binary from the environment
-    chromium_path = os.getenv("CHROME_BIN") or shutil.which("chromium") or shutil.which("chromium-browser")
+    # Manually set Chromium and ChromeDriver paths
+    chromium_path = "/usr/bin/chromium"
+    chromedriver_path = "/usr/bin/chromedriver"
 
-    if not chromium_path:
-        raise FileNotFoundError("Chromium binary not found. Make sure Chromium is installed.")
+    # Ensure the paths agree with your environment
+    if not os.path.exists(chromium_path):
+        raise FileNotFoundError(f"Chromium binary not found at {chromium_path}.")
+    if not os.path.exists(chromedriver_path):
+        raise FileNotFoundError(f"ChromeDriver binary not found at {chromedriver_path}.")
 
     # Set Chrome options
     options = Options()
-    options.add_argument('--headless')
-    options.add_argument('--no-sandbox')
-    options.add_argument('--disable-dev-shm-usage')
-    options.binary_location = chromium_path  # Use the detected path for Chromium
+    options.add_argument('--headless')  # Required for running in a server environment
+    options.add_argument('--no-sandbox')  # Required for running as root in Docker
+    options.add_argument('--disable-dev-shm-usage')  # Prevent shared memory issues
+    options.binary_location = chromium_path
 
-    # Dynamically install ChromeDriver
-    service = Service(ChromeDriverManager().install())
+    # Use the manually set path for ChromeDriver
+    service = Service(chromedriver_path)
     driver = webdriver.Chrome(service=service, options=options)
 
     try:
         # Navigate to the URL
         driver.get(url)
 
-        # Example: Extract the page title
+        # Extract the page title as an example
         title = driver.title
         return {"title": title}
     finally:
         driver.quit()
+
 
 
